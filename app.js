@@ -91,6 +91,7 @@ var uiController = (function () {
     incomeLabel: ".budget__income--value",
     expenseLabel: ".budget__expenses--value",
     percentageLabel: ".budget__expenses--percentage",
+    container: ".container",
   };
 
   return {
@@ -177,6 +178,18 @@ var globalController = (function (bgCtl, uiCtl) {
     }
   };
 
+  var ctrlDeleteItem = function (event) {
+    var itemID, splitID, ID, type;
+    console.log("EVENT ", event.target);
+    itemID = event.target.parentNode.parentNode.parentNode.parentNode.id;
+    if (itemID) {
+      splitID = itemID.split("-");
+      type = splitID[0];
+      ID = splitID[1];
+      console.log("SPLIT ", splitID, type, ID);
+    }
+  };
+
   var setupEventListener = function () {
     var DOM = uiCtl.getDOMstrings();
 
@@ -188,6 +201,10 @@ var globalController = (function (bgCtl, uiCtl) {
         ctrlAddItem();
       }
     });
+
+    document
+      .querySelector(DOM.container)
+      .addEventListener("click", ctrlDeleteItem);
   };
 
   return {
