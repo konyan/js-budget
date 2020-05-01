@@ -51,6 +51,19 @@ var bugetContoller = (function () {
       return newItem;
     },
 
+    deleteItem: function (type, id) {
+      var ids, index;
+      ids = data.allItems[type].map(function (current) {
+        return current.id;
+      });
+
+      index = ids.indexOf(id);
+      console.log("IDS ", ids, "INDEX", index);
+      if (id !== -1) {
+        data.allItems[type].splice(index, 1);
+      }
+    },
+
     calculageBudget: function () {
       calculateTotal("inc");
       calculateTotal("exp");
@@ -108,11 +121,11 @@ var uiController = (function () {
       if (type == "inc") {
         element = DOMstrings.incomeContainer;
         html =
-          '<div class="item clearfix" id="income-%id%"><div class="item__description">%description%</div><div class="right clearfix"><div class="item__value">+ %value%</div><div class="item__delete"><button class="item__delete--btn"><i class="ion-ios-close-outline"></i></button></div></div></div>';
+          '<div class="item clearfix" id="inc-%id%"><div class="item__description">%description%</div><div class="right clearfix"><div class="item__value">+ %value%</div><div class="item__delete"><button class="item__delete--btn"><i class="ion-ios-close-outline"></i></button></div></div></div>';
       } else if (type == "exp") {
         element = DOMstrings.expenseContainer;
         html =
-          '<div class="item clearfix" id="expense-%id%"><div class="item__description">%description%</div><div class="right clearfix"> <div class="item__value">- %value%</div><div class="item__percentage">21%</div><div class="item__delete"><button class="item__delete--btn"><i class="ion-ios-close-outline"></i></button></div> </div></div>';
+          '<div class="item clearfix" id="exp-%id%"><div class="item__description">%description%</div><div class="right clearfix"> <div class="item__value">- %value%</div><div class="item__percentage">21%</div><div class="item__delete"><button class="item__delete--btn"><i class="ion-ios-close-outline"></i></button></div> </div></div>';
       }
       newHtml = html.replace("%id%", obj.id);
       newHtml = newHtml.replace("%description%", obj.description);
@@ -120,6 +133,12 @@ var uiController = (function () {
 
       document.querySelector(element).insertAdjacentHTML("beforeend", newHtml);
     },
+
+    deleteListItem: function (selectorID) {
+      var el = document.getElementById(selectorID);
+      el.parentNode.removeChild(el);
+    },
+
     clearFields: function () {
       var fields, fieldsArr;
       fields = document.querySelectorAll(
@@ -185,8 +204,12 @@ var globalController = (function (bgCtl, uiCtl) {
     if (itemID) {
       splitID = itemID.split("-");
       type = splitID[0];
-      ID = splitID[1];
+      ID = parseInt(splitID[1]);
       console.log("SPLIT ", splitID, type, ID);
+
+      bgCtl.deleteItem(type, ID);
+
+      uiCtl.deleteListItem(itemID);
     }
   };
 
